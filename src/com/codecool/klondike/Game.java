@@ -106,13 +106,18 @@ public class Game extends Pane {
     }
 
     public void refillStockFromDiscard() {
-        //TODO
+        Card card = discardPile.getTopCard();
+        while ( card != null ){
+            card.flip();
+            card.moveToPile(stockPile);
+            card = discardPile.getTopCard();
+        }
         System.out.println("Stock refilled from discard pile.");
     }
 
     public boolean isMoveValid(Card card, Pile destPile) {
-        //TODO
-        return true;
+        Card destCard = destPile.getTopCard();
+        return Card.isOppositeColor(destCard, card);
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
         Pile result = null;
