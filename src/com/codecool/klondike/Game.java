@@ -89,7 +89,7 @@ public class Game extends Pane {
         if (pile != null) {
             ObservableList<Card> cards = source.getCards();
 
-            if (cards.size() >= 2) {
+            if ((cards.size() >= 2) && (source.getPileType() != Pile.PileType.DISCARD)) {
                 Card cardToFlip = cards.get(cards.size() - 2);
                 cardToFlip.flip();
             }
