@@ -87,7 +87,6 @@ public class Game extends Pane {
             handleValidMove(card, pile);
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
-            draggedCards = null;
         }
     };
 
@@ -121,6 +120,10 @@ public class Game extends Pane {
 
     public boolean isMoveValid(Card card, Pile destPile) {
         Card destCard = destPile.getTopCard();
+        if(destPile.getPileType().equals(Pile.PileType.FOUNDATION)) {
+            return !Card.isOppositeColor(destCard, card);
+        }
+
         return Card.isOppositeColor(destCard, card);
     }
     private Pile getValidIntersectingPile(Card card, List<Pile> piles) {
