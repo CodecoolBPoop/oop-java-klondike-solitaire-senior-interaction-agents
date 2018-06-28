@@ -1,10 +1,13 @@
 package com.codecool.klondike;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -17,6 +20,8 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.codecool.klondike.Klondike.main;
 
 public class Game extends Pane {
 
@@ -104,9 +109,6 @@ public class Game extends Pane {
 
             handleValidMove(card, pile);
 
-            // Check for win
-            if (isGameWon()) System.out.println("The game has been won!");
-
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
@@ -122,6 +124,7 @@ public class Game extends Pane {
 
     public Game() {
         deck = Card.createNewDeck();
+        initButtons();
         initPiles();
         dealCards();
     }
@@ -200,8 +203,54 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
+
+        // Check for win
+        Platform.runLater(() -> {
+            if (isGameWon()) {
+                System.out.println("The game has been won!");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Congratulation!");
+                alert.setHeaderText(null);
+                alert.setContentText("Congratulation! You won the game!");
+                alert.showAndWait();
+            }
+        });
     }
 
+    private void initButtons() {
+        Button restart_btn = new Button();
+        restart_btn.setLayoutX(455);
+        restart_btn.setLayoutY(50);
+        restart_btn.setPrefWidth(130);
+        restart_btn.setPrefHeight(50);
+        restart_btn.setText("RESTART");
+        restart_btn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Game restarted.");
+                restartGame();
+            }
+        });
+        getChildren().add(restart_btn);
+    }
+
+    private void restartGame() {
+        stockPile.clear();
+        for (int i=0; i < 7; i++) {
+            tableauPiles.get(i).clear();
+        }
+        for (int i=0; i < 4; i++) {
+            foundationPiles.get(i).clear();
+        }
+        discardPile.clear();
+        foundationPiles.clear();
+        tableauPiles.clear();
+        deck = Card.createNewDeck();
+        getChildren().clear();
+        initPiles();
+        dealCards();
+        initButtons();
+    }
 
     private void initPiles() {
         stockPile = new Pile(Pile.PileType.STOCK, "Stock", STOCK_GAP);
