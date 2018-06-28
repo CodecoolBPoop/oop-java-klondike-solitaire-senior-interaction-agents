@@ -4,6 +4,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class Klondike extends Application {
 
@@ -15,10 +18,15 @@ public class Klondike extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception {
         Card.loadCardImages();
         Game game = new Game();
-        game.setTableBackground(new Image("/table/green.png"));
+        game.setTableBackground(new Image("/table/background.gif"));
+
+        AudioInputStream audioIn = AudioSystem.getAudioInputStream(getClass().getResource("/music/music.wav"));
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioIn);
+        clip.start();
 
         primaryStage.setTitle("Klondike Solitaire");
         primaryStage.setScene(new Scene(game, WINDOW_WIDTH, WINDOW_HEIGHT));
