@@ -1,5 +1,6 @@
 package com.codecool.klondike;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -104,9 +105,6 @@ public class Game extends Pane {
 
             handleValidMove(card, pile);
 
-            // Check for win
-            if (isGameWon()) System.out.println("The game has been won!");
-
         } else {
             draggedCards.forEach(MouseUtil::slideBack);
             draggedCards.clear();
@@ -200,6 +198,18 @@ public class Game extends Pane {
         System.out.println(msg);
         MouseUtil.slideToDest(draggedCards, destPile);
         draggedCards.clear();
+
+        // Check for win
+        Platform.runLater(() -> {
+            if (isGameWon()) {
+                System.out.println("The game has been won!");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Congratulation!");
+                alert.setHeaderText(null);
+                alert.setContentText("Congratulation! You won the game!");
+                alert.showAndWait();
+            }
+        });
     }
 
 
